@@ -75,10 +75,26 @@ df = pd.DataFrame(data, columns=["Méthode", "N", "Approximation", "Erreur exact
 
 # --- Résultats sélectionnés ---
 df_selected = df[(df["Méthode"] == methode) & (df["N"] == N)]
-approx = df_selected["Approximation"].values[0]
-err_exacte = df_selected["Erreur exacte"].values[0]
-err_theorique = df_selected["Erreur théorique"].values[0]
-rel_error = df_selected["Erreur relative (%)"].values[0]
+
+if not df_selected.empty:
+    approx = df_selected["Approximation"].values[0]
+    err_exacte = df_selected["Erreur exacte"].values[0]
+    err_theorique = df_selected["Erreur théorique"].values[0]
+    rel_error = df_selected["Erreur relative (%)"].values[0]
+    
+    st.markdown("### 📌 Résumé des résultats")
+    st.code(f"""
+    Valeur exacte         : {valeur_exacte:.10f}
+    Méthode               : {methode}
+    Nombre de subdivisions: {N}
+    Valeur approchée      : {approx:.10f}
+    Erreur exacte         : {err_exacte:.5e}
+    Erreur relative (%)   : {rel_error:.3f} %
+    Erreur théorique      : {err_theorique:.5e}
+    """, language="text")
+else:
+    st.warning(f"Aucune donnée disponible pour la méthode '{methode}' avec N = {N}.")
+
 
 # --- Résumé ---
 st.markdown("### \U0001F4CC Résumé des résultats")
