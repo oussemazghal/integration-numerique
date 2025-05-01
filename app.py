@@ -32,7 +32,7 @@ def Gauss_quad_composite(methode, a, b, N):
 
 # --- Interface Streamlit ---
 st.set_page_config(page_title="Méthodes d'intégration numérique", layout="wide")
-st.title("\U0001F522 Analyse complète des méthodes d'intégration numérique")
+st.title("🔢 Analyse complète des méthodes d'intégration numérique")
 
 col1, col2, col3 = st.columns(3)
 with col1:
@@ -41,7 +41,7 @@ with col2:
     N = st.slider("Nombre de subdivisions N", min_value=1, max_value=512, value=50)
 with col3:
     a = st.number_input("Borne a", value=0.0)
-    b = st.number_input("Borne b", value=10.0)
+    b = st.number_input("Borne b", value=2.0)
 
 # --- Calculs de base ---
 a_, b_ = min(a, b), max(a, b)
@@ -81,24 +81,9 @@ if not df_selected.empty:
     err_exacte = df_selected["Erreur exacte"].values[0]
     err_theorique = df_selected["Erreur théorique"].values[0]
     rel_error = df_selected["Erreur relative (%)"].values[0]
-    
+
     st.markdown("### 📌 Résumé des résultats")
     st.code(f"""
-    Valeur exacte         : {valeur_exacte:.10f}
-    Méthode               : {methode}
-    Nombre de subdivisions: {N}
-    Valeur approchée      : {approx:.10f}
-    Erreur exacte         : {err_exacte:.5e}
-    Erreur relative (%)   : {rel_error:.3f} %
-    Erreur théorique      : {err_theorique:.5e}
-    """, language="text")
-else:
-    st.warning(f"Aucune donnée disponible pour la méthode '{methode}' avec N = {N}.")
-
-
-# --- Résumé ---
-st.markdown("### \U0001F4CC Résumé des résultats")
-st.code(f"""
 Valeur exacte         : {valeur_exacte:.10f}
 Méthode               : {methode}
 Nombre de subdivisions: {N}
@@ -107,9 +92,11 @@ Erreur exacte         : {err_exacte:.5e}
 Erreur relative (%)   : {rel_error:.3f} %
 Erreur théorique      : {err_theorique:.5e}
 """, language="text")
+else:
+    st.warning(f"Aucune donnée disponible pour la méthode '{methode}' avec N = {N}.")
 
 # --- Graphique de la fonction ---
-st.markdown("### \U0001F4CA Graphique de la fonction f(x)")
+st.markdown("### 📈 Graphique de la fonction f(x)")
 fig1, ax1 = plt.subplots()
 ax1.plot(x_vals, f(x_vals), label="$f(x) = e^{-x^2}$", color='blue')
 ax1.set_title("Fonction f(x)")
@@ -120,7 +107,7 @@ ax1.legend()
 st.pyplot(fig1)
 
 # --- Erreurs exactes ---
-st.markdown("### \U0001F4C8 Comparaison des erreurs exactes")
+st.markdown("### 📊 Comparaison des erreurs exactes")
 fig2, ax2 = plt.subplots()
 for meth in df["Méthode"].unique():
     subset = df[df["Méthode"] == meth]
@@ -134,7 +121,7 @@ ax2.legend()
 st.pyplot(fig2)
 
 # --- Erreurs théoriques ---
-st.markdown("### \U0001F4C9 Comparaison des erreurs théoriques")
+st.markdown("### 📐 Comparaison des erreurs théoriques")
 fig3, ax3 = plt.subplots()
 for meth in df["Méthode"].unique():
     subset = df[df["Méthode"] == meth]
@@ -148,7 +135,7 @@ ax3.legend()
 st.pyplot(fig3)
 
 # --- Erreurs relatives ---
-st.markdown("### \U0001F4C5 Comparaison des erreurs relatives (%)")
+st.markdown("### 📉 Comparaison des erreurs relatives (%)")
 fig4, ax4 = plt.subplots()
 for meth in df["Méthode"].unique():
     subset = df[df["Méthode"] == meth]
@@ -164,35 +151,35 @@ st.pyplot(fig4)
 # --- Formules utilisées ---
 with st.expander("📝 Formules utilisées"):
     st.markdown(r"""
-    ### Méthodes d'intégration :
+### Méthodes d'intégration :
 
-    - **Point Milieu :**  
-      $$ \int_a^b f(x) \, dx \approx (b - a) \cdot f\left( \frac{a + b}{2} \right) $$
+- **Point Milieu :**  
+  $$ \int_a^b f(x) \, dx \approx (b - a) \cdot f\left( \frac{a + b}{2} \right) $$
 
-    - **Trapèzes :**  
-      $$ \int_a^b f(x) \, dx \approx \frac{b - a}{2} [f(a) + f(b)] $$
+- **Trapèzes :**  
+  $$ \int_a^b f(x) \, dx \approx \frac{b - a}{2} [f(a) + f(b)] $$
 
-    - **Simpson :**  
-      $$ \int_a^b f(x) \, dx \approx \frac{b - a}{6} [f(a) + 4f(m) + f(b)] $$
+- **Simpson :**  
+  $$ \int_a^b f(x) \, dx \approx \frac{b - a}{6} [f(a) + 4f(m) + f(b)] $$
 
-    ### Erreurs théoriques :
+### Erreurs théoriques :
 
-    - **Point Milieu :**  
-      $$ \text{Erreur} \leq \frac{(b-a)^3}{24N^2} \cdot \max |f''(x)| $$
+- **Point Milieu :**  
+  $$ \text{Erreur} \leq \frac{(b-a)^3}{24N^2} \cdot \max |f''(x)| $$
 
-    - **Trapèzes :**  
-      $$ \text{Erreur} \leq \frac{(b-a)^3}{12N^2} \cdot \max |f''(x)| $$
+- **Trapèzes :**  
+  $$ \text{Erreur} \leq \frac{(b-a)^3}{12N^2} \cdot \max |f''(x)| $$
 
-    - **Simpson :**  
-      $$ \text{Erreur} \leq \frac{(b-a)^5}{2880N^4} \cdot \max |f^{(4)}(x)| $$
-    """, unsafe_allow_html=True)
+- **Simpson :**  
+  $$ \text{Erreur} \leq \frac{(b-a)^5}{2880N^4} \cdot \max |f^{(4)}(x)| $$
+""", unsafe_allow_html=True)
 
 # --- Téléchargement des données ---
 csv = df.to_csv(index=False).encode('utf-8')
-st.download_button("\U0001F4BE Télécharger les résultats (CSV)", data=csv, file_name='resultats_integration.csv', mime='text/csv')
+st.download_button("💾 Télécharger les résultats (CSV)", data=csv, file_name='resultats_integration.csv', mime='text/csv')
 
 # --- Tableau interactif ---
-st.markdown("### \U0001F522 Tableau des résultats complets")
+st.markdown("### 📋 Tableau des résultats complets")
 st.dataframe(df[df["N"] <= 128].pivot(index="N", columns="Méthode", values=["Approximation", "Erreur exacte", "Erreur théorique", "Erreur relative (%)"]))
 
 st.caption("Projet complet — Intégration numérique avec analyse comparative des méthodes.")
